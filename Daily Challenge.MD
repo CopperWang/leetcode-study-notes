@@ -45,3 +45,34 @@ class Solution:
 时间复杂度：O(log buckets) —— 实际上是确定需要多少只猪的时间。
 
 空间复杂度：O(1)。
+
+# 1356. Sort Integers by The Number of 1 Bits
+
+### 题干
+你被给予一个整数数组`arr`。按照数组中整数的二进制表示中`1`的数量进行升序排序，如果有两个或更多的整数具有相同数量的`1`，则需要按它们的升序进行排序。
+
+排序后返回该数组。
+
+### 分析
+为了解决这个问题，我们首先需要为数组中的每个元素计算其二进制表示中的1的个数。然后，我们可以使用Python的内置排序功能，并提供一个自定义的排序键。这个键应该首先基于1的个数进行排序，然后再基于元素的实际值进行排序。
+
+### 以下是相应的Python代码
+
+```python
+class Solution:
+    def sortByBits(self, arr: List[int]) -> List[int]:
+        # 定义一个内部函数来计算一个数的二进制表示中1的个数
+        def count_bits(n):
+            count = 0
+            while n:
+                count += n & 1
+                n >>= 1
+            return count
+        
+        # 对数组进行排序，首先根据1的个数，然后根据数值
+        return sorted(arr, key=lambda x: (count_bits(x), x))
+```
+
+时间复杂度：$O(n \log n)$ —— n是数组的长度。这是由于我们使用了排序，而计算二进制中1的数量是O(log n)的操作。
+
+空间复杂度：O(1) —— 如果我们不考虑输出所需的空间。
