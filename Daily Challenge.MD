@@ -76,3 +76,166 @@ class Solution:
 时间复杂度：$O(n \log n)$ —— n是数组的长度。这是由于我们使用了排序，而计算二进制中1的数量是O(log n)的操作。
 
 空间复杂度：O(1) —— 如果我们不考虑输出所需的空间。
+
+# 2433. Find The Original Array of Prefix Xor
+### 题干
+你被给予一个大小为n的整数数组pref。找到并返回满足以下条件的大小为n的数组arr：
+
+pref[i] = arr[0] ^ arr[1] ^ ... ^ arr[i]。
+注意，^ 表示按位异或操作。
+
+可以证明答案是唯一的。
+
+### 分析
+为了解决这个问题，我们首先要理解一个重要的XOR（异或）属性：
+
+```
+A ^ B = C
+```
+
+那么
+
+```
+A = B ^ C
+```
+
+和
+
+```
+B = A ^ C
+```
+
+这意味着如果我们有一个给定的XOR结果和其中的一个数，我们可以得到另一个数。
+
+现在，对于给定的问题，我们有：
+
+```
+pref[i] = arr[0] ^ arr[1] ^ ... ^ arr[i]
+```
+
+为了找到`arr[i]`，我们可以使用以下逻辑：
+
+```
+arr[i] = pref[i] ^ pref[i-1]
+```
+
+对于`arr[0]`，我们有：
+
+```
+arr[0] = pref[0]
+```
+
+使用上述逻辑，我们可以为给定的`pref`数组找到`arr`数组。
+
+以下是相应的Python代码：
+
+```python
+class Solution:
+    def findArray(self, pref: List[int]) -> List[int]:
+        n = len(pref)
+        arr = [0] * n
+        arr[0] = pref[0]
+        
+        for i in range(1, n):
+            arr[i] = pref[i] ^ pref[i-1]
+        
+        return arr
+```
+
+时间复杂度：O(n) —— n是数组的长度。我们只对数组进行了一次循环。
+
+空间复杂度：O(1) —— 如果我们不考虑输出所需的空间。
+
+# 501. Find Mode in Binary Search Tree
+
+### 题目翻译：
+
+题目：501. 在二叉搜索树中找众数
+
+给定一个包含重复值的二叉搜索树（BST）的根节点，返回其中所有的众数（即，出现次数最多的元素）。
+
+如果树中有多个众数，可以按任意顺序返回它们。
+
+假设BST的定义如下：
+
+- 一个节点的左子树只包含键值小于或等于该节点的键值的节点。
+- 一个节点的右子树只包含键值大于或等于该节点的键值的节点。
+- 左右子树也必须是二叉搜索树。
+
+示例：
+
+1. 输入：root = [1,null,2,2] 输出：[2]
+2. 输入：root = [0] 输出：[0]
+
+约束条件：
+
+- 树中的节点数量在范围 [1, 10^4] 内。
+- 节点的值在 -10^5 到 10^5 之间。
+
+后续挑战：你能在不使用额外空间的情况下完成这个任务吗？（假设由于递归产生的隐式栈空间不计入总空间）
+
+### 知识点：
+
+这道题测试了以下知识点：
+1. 二叉搜索树（BST）的特性。
+2. 树的中序遍历。
+3. 对遍历的结果进行分析，找到出现次数最多的元素。
+
+### 解题方法：
+
+我们可以使用中序遍历，因为BST的中序遍历是升序的。当我们进行中序遍历时，相同的值会连续出现。因此，我们可以在遍历过程中记录当前值的出现次数，并与之前的最大出现次数进行比较。
+
+详细步骤：
+1. 使用中序遍历树，获取到所有的节点值。
+2. 在遍历过程中，计算每个值的出现次数。
+3. 找出出现次数最多的值，并记录下来。
+
+Python代码解答：
+```python
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def findMode(self, root: TreeNode) -> List[int]:
+        # 如果根为空，直接返回空列表
+        if not root:
+            return []
+
+        # 当前值，当前值出现的次数，最大出现次数
+        self.curVal, self.curCount, self.maxCount = None, 0, 0
+        # 用于存储众数
+        self.modes = []
+
+        # 中序遍历函数
+        def inorder(node):
+            if not node:
+                return
+            # 遍历左子树
+            inorder(node.left)
+            # 如果当前值和上一个值相同，则计数增加
+            if node.val == self.curVal:
+                self.curCount += 1
+            else:
+                # 否则更新当前值和计数
+                self.curVal = node.val
+                self.curCount = 1
+            # 更新最大出现次数，并根据需要更新众数列表
+            if self.curCount > self.maxCount:
+                self.maxCount = self.curCount
+                self.modes = [self.curVal]
+            elif self.curCount == self.maxCount:
+                self.modes.append(self.curVal)
+            # 遍历右子树
+            inorder(node.right)
+
+        # 调用中序遍历
+        inorder(root)
+        return self.modes
+```
+
+时间复杂度：O(n) - n 是树的节点数量。我们遍历了整棵树。
+
+空间复杂度：O(1) - 不考虑递归所使用的隐式栈空间和结果列表。
