@@ -529,6 +529,17 @@ DataFrame animals
 ```python
 import pandas as pd
 
-def findHeavyAnimals(animals: pd.DataFrame) -> pd.DataFrame:
-    return animals[animals['weight'] > 100].sort_values(by = 'weight', ascending = False)[['name']]
+def meltTable(report: pd.DataFrame) -> pd.DataFrame:
+    # 使用pandas的melt方法将report数据框从宽格式转换为长格式
+    result = pd.melt(report, id_vars=['product'], value_vars=['quarter_1', 'quarter_2', 'quarter_3', 'quarter_4'], 
+                     var_name='quarter', value_name='sales')
+    
+    # 使用 categorical 类型确保排序按照输入的季度和产品顺序
+    result['quarter'] = pd.Categorical(result['quarter'], categories=['quarter_1', 'quarter_2', 'quarter_3', 'quarter_4'], ordered=True)
+    result['product'] = pd.Categorical(result['product'], categories=report['product'].unique(), ordered=True)
+    
+    # 为了保持输出的顺序与题目描述相匹配，我们首先按照季度，然后按照产品进行排序
+    result = result.sort_values(by=['quarter', 'product']).reset_index(drop=True)
+    
+    return result
 ```
