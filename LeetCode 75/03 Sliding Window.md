@@ -1,6 +1,46 @@
-# 03 Sliding Window
+# 0000 Sliding Window
 
-## 0643 Maximum Average Subarray I
+---
+
+在 LeetCode 或其他算法问题中提到的 "Sliding Window"（滑动窗口）是一种算法技巧，通常用于处理数组或字符串上的连续数据区间问题。
+
+**滑动窗口技巧的定义：**
+- 滑动窗口技巧涉及维护一个窗口，这个窗口可以是数组或字符串的连续子部分。
+- 窗口可以增大或减小，以适应某些特定条件。
+- 窗口滑动一般是从左到右的，随着算法的执行向前移动。
+
+**滑动窗口技巧适用的场景：**
+1. **固定大小的窗口问题**：例如，计算数组中所有大小为 k 的子数组的平均数。
+2. **可变大小的窗口问题**：例如，找到最小长度的子数组，其和至少为 k。
+3. **字符串问题**：如找到包含所有给定字符的最短子字符串。
+4. **追踪问题**：如计算一个给定大小的窗口内不同数字的数量。
+
+使用滑动窗口技巧的优点是它可以在 O(n) 的时间复杂度内解决问题，因为它避免了不必要的重复计算，窗口的滑动过程中只需要添加或删除一个元素的计算。
+
+**Python 中使用滑动窗口技巧的一个基本示例（找到数组中的最大连续子数组和）：**
+
+```python
+def maxSubArray(nums, k):
+    window_sum = 0
+    max_sum = float('-inf')
+    left = 0
+    
+    for right in range(len(nums)):
+        window_sum += nums[right]  # 将右侧元素加入窗口
+        # 当窗口大小达到 k 时
+        if right >= k - 1:
+            max_sum = max(max_sum, window_sum)  # 更新最大和
+            window_sum -= nums[left]  # 移出窗口左侧元素
+            left += 1  # 窗口左边界向右移动
+    
+    return max_sum
+```
+
+在这个例子中，我们使用了一个固定大小为 k 的滑动窗口来计算最大的连续子数组和。当窗口滑过数组时，我们只需要从总和中减去左侧的元素并添加右侧的新元素，就能快速更新窗口中的元素和。
+
+在 LeetCode 上，滑动窗口技巧常常被用于解决这些类型的问题，能够有效地减少时间复杂度，提高算法效率。
+
+# 0643 Maximum Average Subarray I
 
 ---
 
@@ -35,7 +75,7 @@ class Solution:
 
 空间复杂度：O(1) - 我们只使用了常数级别的额外空间。
 
-## 1456 Maximum Number of Vowels in a Substring of Given Length
+# 1456 Maximum Number of Vowels in a Substring of Given Length
 
 ---
 
@@ -75,7 +115,7 @@ class Solution:
 
 空间复杂度：O(1) - 我们使用了常数级别的额外空间。
 
-## 1004 Max Consecutive Ones III
+# 1004 Max Consecutive Ones III
 
 ---
 
@@ -120,7 +160,9 @@ class Solution:
 时间复杂度：O(n) - n是数组`nums`的长度，我们遍历一次`nums`。
 空间复杂度：O(1) - 使用了常数级别的额外空间。
 
-## 1493 Longest Subarray of 1's After Deleting One Element
+# 1493 Longest Subarray of 1's After Deleting One Element
+
+---
 
 **题目翻译：**
 
