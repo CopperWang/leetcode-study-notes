@@ -170,9 +170,93 @@ class SmallestInfiniteSet:
 
 ---
 
+```Python
+import heapq
 
+class Solution:
+    def maxScore(self, nums1: List[int], nums2: List[int], k: int) -> int:
+        # 将两个列表 nums2 和 nums1 组成元组列表，并按 nums2 降序，nums1 降序排序
+        lst = list(zip(nums2, nums1))
+        lst.sort(key=lambda x: (-x[0], -x[1]))
+        
+        # 初始化一个空的最小堆
+        flst = []
+        heapq.heapify(flst)
+        
+        # 初始化变量
+        i = 0
+        sm = 0
+        ef = float("infinity")  # 用来记录 nums2 中最小的数
+        prd = float("-infinity")  # 用来记录最大乘积
+        
+        # 进行 k 次操作，每次选择 nums2 中最大的数，并将对应的 nums1 中的数加入堆中
+        while i < k:
+            x = lst.pop(0)
+            heapq.heappush(flst, x[1])
+            ef = min(ef, x[0])
+            sm += x[1]
+            i += 1
+        
+        # 计算当前的最大乘积
+        prd = max(prd, sm * ef)
+        
+        # 遍历剩余的元素，试图通过替换堆中的最小元素来找到更大的乘积
+        while lst:
+            x = heapq.heappop(flst)
+            sm -= x
+            y = lst.pop(0)
+            heapq.heappush(flst, y[1])
+            ef = min(ef, y[0])
+            sm += y[1]
+            prd = max(prd, sm * ef)
+        
+        # 返回最大乘积
+        return prd
+```
 
+# 2462 Total Cost to Hire K Workers
 
+---
 
-Total Cost to Hire K Workers
+```python
+from typing import List
+from heapq import heapify, heappop, heappush
+
+class Solution:
+    def totalCost(self, costs: List[int], k: int, candidates: int) -> int:
+        # 创建两个堆，一个用于存储前candidates个成本，一个用于存储后candidates个成本
+        q = costs[:candidates]
+        r = costs[max(candidates, len(costs) - candidates):]
+        
+        # 对两个堆进行堆化，使得我们可以快速取得最小值
+        heapify(q)
+        heapify(r)
+        
+        # 初始化结果变量，用于累加成本
+        res = 0
+        
+        # 初始化两个指针，i从candidates开始向后移动，j从倒数candidates前一个开始向前移动
+        i = candidates
+        j = len(costs) - candidates - 1
+        
+        # 进行k次选择，每次选择两个堆中最小的成本
+        for _ in range(k):
+            # 如果r为空或者q的堆顶元素更小，则从q中取出元素
+            if not r or q and q[0] <= r[0]:
+                res += heappop(q)  # 累加成本
+                if i <= j:
+                    heappush(q, costs[i])  # 将新的成本推入堆中
+                    i += 1  # 移动指针
+
+            else:
+                res += heappop(r)  # 如果r的堆顶元素更小，则从r中取出元素
+                if i <= j:
+                    heappush(r, costs[j])  # 将新的成本推入堆中
+                    j -= 1  # 移动指针
+        
+        # 返回累加的成本作为结果
+        return res
+```
+
+这个解法首先是利用两个最小堆分别管理前`candidates`和后`candidates`的工人成本，通过指针`i`和`j`向中间移动，不断从两端取出最小成本的工人，直到选取了`k`个工人。通过堆这种数据结构，我们可以以对数时间复杂度获取最小成本的工人，从而提高整个算法的效率。
 
